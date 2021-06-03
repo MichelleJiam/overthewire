@@ -85,30 +85,59 @@ Using [`base64`](https://linux.die.net/man/1/base64) to reverse the encoding.
   Password: `IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR`
 </details>
 
-## Level 
+## Level 11
 #### Problem:
-
+Password is in file where all letters (a-z, A-Z) have been rotated 13 places (see [ROT13 cipher](https://en.wikipedia.org/wiki/ROT13)).
 
 #### Method:
-
+Using [`tr`](https://linux.die.net/man/1/tr) to do the reverse-rotation, as discussed [here](https://unix.stackexchange.com/questions/19772/how-does-tr-a-z-n-za-m-work).
 <details>
   <summary>Answer</summary> 
   
-  ``  
-  Password: ``
+  `cat data.txt | tr '[a-z]' '[n-za-m]' | tr '[A-Z]' '[N-ZA-M]'`  
+  Password: `5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu`
 </details>
 
-## Level 
+## Level 12
 #### Problem:
-
+Password is stored in a hexdump which has been compressed several times.
 
 #### Method:
+This one was pretty tricky. I will describe the general steps but leave out the order.
+- Use [`xxd`](https://linux.die.net/man/1/xxd) to convert the hexdump to binary and **redirect** output to a new file.
+- Use [`file`](https://linux.die.net/man/1/file) to reveal specific compression used. `-z` option reveals two levels deep.
+- Files containing [`gzip`](https://linux.die.net/man/1/gzip) compressed data should be renamed to appropriate suffix using `mv`.
+- Files using [`tar`](https://linux.die.net/man/1/tar) compression can be decompressed with `-xvf` options.
+- Repeat until completely decompressed ASCII file is revealed.
 
 <details>
   <summary>Answer</summary> 
   
-  ``  
-  Password: ``
+  ```
+  cp data.txt data2.txt
+  xxd -r data2.txt > data3
+  file data3
+  mv data3 data3.gz
+  gzip -d data3.gz
+  file data3
+  bzip2 -d data3
+  file data3.out
+  gzip -d data3.out
+  mv data3.out data3.gz
+  gzip -d data3.gz
+  file data3.gz
+  tar -xvf data3
+  file data5.bin
+  tar -xvf data5.bin
+  file data6.bin
+  bzip2 -d data6.bin
+  file data6.bin.out
+  tar -xvf data6.bin.out
+  file data8.bin
+  mv data8.bin data8.gz
+  gzip -d data8.gz
+  ```
+  Password: `8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL`
 </details>
 
 ## Level 
