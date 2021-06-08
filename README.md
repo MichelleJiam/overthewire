@@ -4,6 +4,6 @@ I will be documenting my attempts at solving [OverTheWire](https://overthewire.o
 
 ## [Bandit](https://overthewire.org/wargames/bandit/)
 **Difficulty**: beginner  
+**Levels**: 5 - 12  
 Problem and method descriptions can be found in the [MD file](bandit/bandit.md).  
-I didn't document the first 4 levels due to their simplicity.
 Answers are included for documentation purposes. They are hidden in spoiler blocks.
