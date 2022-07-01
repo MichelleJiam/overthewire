@@ -140,6 +140,100 @@ This one was pretty tricky. I will describe the general steps but leave out the 
   Password: `8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL`
 </details>
 
+## Level 13
+#### Problem:
+Instead of a password, the user has to use a private SSH key to log onto the next level.
+
+#### Method:
+Running `cat` on the private SSH key file reveals that it is in fact what it says it is.
+Using it therefore just involved finding the right `ssh` options.
+<details>
+  <summary>Answer</summary> 
+  
+  `ssh bandit14@localhost -i sshkey.private`  
+  Password: N/A
+</details>
+
+## Level 14 
+#### Problem:
+The prompt is to "submit the current level's password to port 30000 on localhost" to receive the next password.
+
+#### Method:
+After fiddling with `openssl s_client` for a bit and not getting the correct response, I read through the manuals
+of each of the "potentially helpful commands" before finding what I needed in `nc` or Netcat, a command-line tool
+for reading and writing data across network connections.
+<details>
+  <summary>Answer</summary> 
+  
+  `nc localhost 30000 < bandit14`  
+  Password: `BfMYroe26WYalil77FoDi9qh59eK5xNr`
+</details>
+
+## Level 15
+#### Problem:
+Again, the challenge was to submit the current password to a port (30001 this time) on localhost,
+but with the added requirement of using SSL encryption.
+
+#### Method:
+This time `openssl s_client` was the correct answer, as hinted through the mention of the `-ign_eof` option
+in the note.  
+Since `s_client`allows connection to a remote host using SSL by default, no additional flags 
+were needed for that requirement.  
+The only thing that took me a minute was what to do after successfully connecting, since all we see is a
+blinking cursor.
+<details>
+  <summary>Answer</summary> 
+  
+  `openssl s_client -connect localhost:30001 -ign_eof`  
+  Then paste in the current level's password to get the next one.  
+  Password: `cluFn7wTiGryunymYOu4RcffSxQluehd`
+</details>
+  
+## Level 16
+#### Problem:
+Retrieve the credentials for the next level by finding out which port in the range 31000 to 32000
+has a server listening and is speaking SSL. There is only 1 server that will give new credentials.
+
+#### Method:
+`nmap` was the obvious choice for checking for open ports within that range first.  
+ After which I just attempted to connect to the handful of ports to see which would work.
+<details>
+  <summary>Answer</summary> 
+  
+  `nmap localhost -p31000-32000`  
+  `openssl s_client -showcerts -connect localhost:xxxx`  
+  Password: 
+  ```
+  -----BEGIN RSA PRIVATE KEY-----
+  MIIEogIBAAKCAQEAvmOkuifmMg6HL2YPIOjon6iWfbp7c3jx34YkYWqUH57SUdyJ
+  imZzeyGC0gtZPGujUSxiJSWI/oTqexh+cAMTSMlOJf7+BrJObArnxd9Y7YT2bRPQ
+  Ja6Lzb558YW3FZl87ORiO+rW4LCDCNd2lUvLE/GL2GWyuKN0K5iCd5TbtJzEkQTu
+  DSt2mcNn4rhAL+JFr56o4T6z8WWAW18BR6yGrMq7Q/kALHYW3OekePQAzL0VUYbW
+  JGTi65CxbCnzc/w4+mqQyvmzpWtMAzJTzAzQxNbkR2MBGySxDLrjg0LWN6sK7wNX
+  x0YVztz/zbIkPjfkU1jHS+9EbVNj+D1XFOJuaQIDAQABAoIBABagpxpM1aoLWfvD
+  KHcj10nqcoBc4oE11aFYQwik7xfW+24pRNuDE6SFthOar69jp5RlLwD1NhPx3iBl
+  J9nOM8OJ0VToum43UOS8YxF8WwhXriYGnc1sskbwpXOUDc9uX4+UESzH22P29ovd
+  d8WErY0gPxun8pbJLmxkAtWNhpMvfe0050vk9TL5wqbu9AlbssgTcCXkMQnPw9nC
+  YNN6DDP2lbcBrvgT9YCNL6C+ZKufD52yOQ9qOkwFTEQpjtF4uNtJom+asvlpmS8A
+  vLY9r60wYSvmZhNqBUrj7lyCtXMIu1kkd4w7F77k+DjHoAXyxcUp1DGL51sOmama
+  +TOWWgECgYEA8JtPxP0GRJ+IQkX262jM3dEIkza8ky5moIwUqYdsx0NxHgRRhORT
+  8c8hAuRBb2G82so8vUHk/fur85OEfc9TncnCY2crpoqsghifKLxrLgtT+qDpfZnx
+  SatLdt8GfQ85yA7hnWWJ2MxF3NaeSDm75Lsm+tBbAiyc9P2jGRNtMSkCgYEAypHd
+  HCctNi/FwjulhttFx/rHYKhLidZDFYeiE/v45bN4yFm8x7R/b0iE7KaszX+Exdvt
+  SghaTdcG0Knyw1bpJVyusavPzpaJMjdJ6tcFhVAbAjm7enCIvGCSx+X3l5SiWg0A
+  R57hJglezIiVjv3aGwHwvlZvtszK6zV6oXFAu0ECgYAbjo46T4hyP5tJi93V5HDi
+  Ttiek7xRVxUl+iU7rWkGAXFpMLFteQEsRr7PJ/lemmEY5eTDAFMLy9FL2m9oQWCg
+  R8VdwSk8r9FGLS+9aKcV5PI/WEKlwgXinB3OhYimtiG2Cg5JCqIZFHxD6MjEGOiu
+  L8ktHMPvodBwNsSBULpG0QKBgBAplTfC1HOnWiMGOU3KPwYWt0O6CdTkmJOmL8Ni
+  blh9elyZ9FsGxsgtRBXRsqXuz7wtsQAgLHxbdLq/ZJQ7YfzOKU4ZxEnabvXnvWkU
+  YOdjHdSOoKvDQNWu6ucyLRAWFuISeXw9a/9p7ftpxm0TSgyvmfLF2MIAEwyzRqaM
+  77pBAoGAMmjmIJdjp+Ez8duyn3ieo36yrttF5NSsJLAbxFpdlc1gvtGCWW+9Cq0b
+  dxviW8+TFVEBl1O4f7HVm6EpTscdDxU+bCXWkfjuRb7Dy9GOtt9JPsX8MBTakzh3
+  vBgsyi/sN3RqRBcGU40fOoZyfAMT8s1m/uYv52O6IgeuZ/ujbjY=
+  -----END RSA PRIVATE KEY-----
+  ```
+</details>
+  
 ## Level 
 #### Problem:
 
@@ -165,7 +259,7 @@ This one was pretty tricky. I will describe the general steps but leave out the 
   ``  
   Password: ``
 </details>
-
+  
 ## Level 
 #### Problem:
 
