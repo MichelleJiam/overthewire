@@ -234,6 +234,50 @@ has a server listening and is speaking SSL. There is only 1 server that will giv
   ```
 </details>
   
+## Level 17
+#### Problem:
+The password is the only line that differs between the files `passwords.old` and `passwords.new` in the directory.
+
+#### Method:
+First we have to connect to the server using the private key gained in the previous level.  
+This involved creating the keyfile, giving it appropriate permissions, and then running `ssh` but with a specified identity file.  
+Afterwards it was a simple task of using `diff`.
+<details>
+  <summary>Answer</summary> 
+  
+  ```
+  ssh -i keyfile bandit17@bandit.labs.overthewire.org -p 2220  # connecting to server
+  diff passwords.new passwords.old
+  ```
+  Password: `kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd`
+</details>
+
+## Level 18
+#### Problem:
+The password is stored in a file called `readme` in the home directory, but `.bashrc` on the bandit18 user has been modified to log you out every time you log in.
+
+#### Method:
+Another `ssh` option is required to circumvent the logging out and read the file where we know the password is stored.
+<details>
+  <summary>Answer</summary> 
+  
+  `ssh bandit18@bandit.labs.overthewire.org -p 2220 -t "cat ~/readme"`  
+  Password: `IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x`
+</details>
+  
+## Level 19
+#### Problem:
+Use the setuid binary in the home directory to access the password stored in `etc/bandit_pass/bandit20`.
+
+#### Method:
+Running the binary without arguments as hinted yielded the initially confusing example of "./bandit20-do id". But once I figured out that `id` wasn't a variable but a command, accessing the password was pretty easy.
+<details>
+  <summary>Answer</summary> 
+  
+  `./bandit20-do cat /etc/bandit_pass/bandit20`  
+  Password: `GbKksEFF4yrVs6il55v6gwY5aVje5f0j`
+</details>
+  
 ## Level 
 #### Problem:
 
@@ -247,6 +291,32 @@ has a server listening and is speaking SSL. There is only 1 server that will giv
   Password: ``
 </details>
 
+## Level 
+#### Problem:
+
+
+#### Method:
+
+<details>
+  <summary>Answer</summary> 
+  
+  ``  
+  Password: ``
+</details>
+
+## Level 
+#### Problem:
+
+
+#### Method:
+
+<details>
+  <summary>Answer</summary> 
+  
+  ``  
+  Password: ``
+</details>
+  
 ## Level 
 #### Problem:
 
